@@ -10,7 +10,6 @@
             <h1 class="text-2xl font-black tracking-tight drop-shadow-md">Selamat Datang di BPBD</h1>
             <p class="text-xs text-gray-100 font-medium mt-1 drop-shadow-md">Sistem Informasi Penanggulangan Bencana Terpadu</p>
         </div>
-
         <!-- Badge Hari & Jam tepat di bawah teks -->
         <div class="inline-flex items-center gap-1.5 bg-slate-950/60 backdrop-blur-md px-3 py-1 rounded-full text-[11px] border border-white/20 shadow-sm">
             <x-heroicon-o-calendar class="w-3.5 h-3.5 text-orange-400" />
@@ -19,4 +18,5 @@
             <span class="font-semibold text-white">14:32 WIB</span>
         </div>
     </div>
+
 </div>
