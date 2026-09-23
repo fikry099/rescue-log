@@ -3,53 +3,57 @@
 @section('title', 'Panggilan Ambulans Darurat - Sub Posko')
 
 @section('content')
-<div class="space-y-6 max-w-7xl mx-auto font-sans">
+<div class="space-y-4 sm:space-y-6 max-w-7xl mx-auto font-sans">
 
-    <!-- Flash Message Success -->
-    @if(session('success'))
-        <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl text-sm font-medium flex items-center justify-between shadow-2xs">
-            <span>{{ session('success') }}</span>
-            <button onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-800 font-bold">&times;</button>
-        </div>
-    @endif
+    <!-- 1. HEADER RINGKAS RESPONSIF -->
+    <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+        <!-- TAMPILAN MOBILE (SMARTPHONE) -->
+        <div class="flex flex-col gap-3 sm:hidden">
+            <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2.5">
+                    <a href="{{ route('lapangan.dashboard') }}"
+                        class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 shrink-0 transition-colors shadow-2xs">
+                        <x-heroicon-s-arrow-left class="w-4 h-4" />
+                    </a>
+                    <div>
+                        <h1 class="text-base font-bold text-slate-900 leading-tight">Ambulans Darurat</h1>
+                        <p class="text-[11px] text-slate-500 mt-0.5 line-clamp-1">Evakuasi medis pengungsi ke Posko Utama.</p>
+                    </div>
+                </div>
 
-    <!-- Flash Message Error -->
-    @if(session('error'))
-        <div class="bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-xl text-sm font-medium flex items-center justify-between shadow-2xs">
-            <span>{{ session('error') }}</span>
-            <button onclick="this.parentElement.remove()" class="text-rose-500 hover:text-rose-800 font-bold">&times;</button>
-        </div>
-    @endif
-
-    <!-- Header & Action SOS (Sesuai Layout Gambar 2) -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
-        <div class="flex items-start sm:items-center gap-3">
-            <!-- Tombol Kembali ke Dashboard Utama Lapangan -->
-            <a href="{{ route('lapangan.dashboard') }}" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center shrink-0 transition-colors shadow-2xs" title="Kembali ke Dashboard">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                </svg>
-            </a>
-            <div>
-                <h1 class="text-xl font-bold text-slate-900 tracking-tight">Panggilan Ambulans Darurat</h1>
-                <p class="text-xs text-slate-500 mt-0.5">Ajukan evakuasi medis darurat pengungsi ke Posko Komando Utama.</p>
+                <button onclick="openModalSos()" class="px-3 py-2 bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5 shrink-0 cursor-pointer">
+                    <span>🆘</span> Panggil SOS
+                </button>
             </div>
         </div>
 
-        <button onclick="openModalSos()" class="px-5 py-3 bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer shrink-0">
-            <span class="text-base">🆘</span> PANGGIL AMBULANS SEKARANG
-        </button>
+        <!-- TAMPILAN DESKTOP / TABLET -->
+        <div class="hidden sm:flex sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <a href="{{ route('lapangan.dashboard') }}" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center shrink-0 transition-colors shadow-2xs" title="Kembali ke Dashboard">
+                    <x-heroicon-s-arrow-left class="w-5 h-5" />
+                </a>
+                <div>
+                    <h1 class="text-xl font-bold text-slate-900 tracking-tight">Panggilan Ambulans Darurat</h1>
+                    <p class="text-xs text-slate-500 mt-0.5">Ajukan evakuasi medis darurat pengungsi ke Posko Komando Utama.</p>
+                </div>
+            </div>
+
+            <button onclick="openModalSos()" class="px-5 py-3 bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer shrink-0">
+                <span class="text-base">🆘</span> PANGGIL AMBULANS SEKARANG
+            </button>
+        </div>
     </div>
 
-    <!-- Active Request Banner (Jika ada permintaan medis yang sedang berjalan) -->
+    <!-- 2. ACTIVE REQUEST BANNER (JIKA ADA PERMINTAAN AKTIF) -->
     @if($activeRequest)
-        <div class="bg-gradient-to-r from-rose-600 to-amber-600 text-white p-5 rounded-2xl shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="bg-gradient-to-r from-rose-600 to-amber-600 text-white p-4 sm:p-5 rounded-2xl shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="space-y-1">
                 <div class="flex items-center gap-2">
                     <span class="px-2 py-0.5 bg-white/20 text-white text-[10px] font-bold rounded uppercase tracking-wider">STATUS AKTIF: {{ str_replace('_', ' ', strtoupper($activeRequest->status)) }}</span>
                     <span class="text-xs font-mono font-bold">{{ $activeRequest->kode_sos }}</span>
                 </div>
-                <h3 class="text-lg font-extrabold">Pasien: {{ $activeRequest->nama_pasien }}</h3>
+                <h3 class="text-base sm:text-lg font-extrabold">Pasien: {{ $activeRequest->nama_pasien }}</h3>
                 <p class="text-xs text-rose-100">Kondisi Medis: {{ $activeRequest->kondisi_medis }}</p>
                 @if($activeRequest->armada)
                     <p class="text-xs font-semibold text-amber-200">🚑 Unit Armada: {{ $activeRequest->armada->nama_armada }} (Driver: {{ $activeRequest->armada->pengemudi ?? '-' }})</p>
@@ -69,11 +73,59 @@
         </div>
     @endif
 
-    <!-- Tabel Riwayat Request Ambulans -->
-    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 space-y-4">
-        <h3 class="text-sm font-bold text-slate-800">Riwayat Panggilan Medis Darurat</h3>
+    <!-- 3. RIWAYAT PANGGANG MEDIS DARURAT -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-4 sm:p-5 space-y-3.5">
+        <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2.5">Riwayat Panggilan Medis Darurat</h3>
 
-        <div class="overflow-x-auto">
+        <!-- A. TAMPILAN MOBILE (KARTU / CARD VIEW KHUSUS HP) -->
+        <div class="block sm:hidden space-y-3">
+            @forelse($requests as $item)
+                <div class="p-3.5 bg-slate-50/70 rounded-xl border border-slate-200/80 flex flex-col gap-2.5">
+                    <div class="flex items-center justify-between border-b border-slate-200/60 pb-2">
+                        <span class="font-mono font-bold text-slate-900 text-xs">{{ $item->kode_sos }}</span>
+                        <div>
+                            @if($item->kategori_darurat == 'kritis_nyawa')
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">🔴 Kritis Nyawa</span>
+                            @elseif($item->kategori_darurat == 'berat')
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">🟡 Berat</span>
+                            @else
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">🟢 Sedang</span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="space-y-1 text-xs">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400 text-[10px] uppercase font-bold">Pasien:</span>
+                            <span class="font-bold text-slate-900">{{ $item->nama_pasien }}</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 text-[10px] uppercase font-bold block">Kondisi Medis:</span>
+                            <p class="text-slate-700 font-medium leading-snug">{{ $item->kondisi_medis }}</p>
+                        </div>
+                        <div class="flex justify-between items-center pt-1">
+                            <span class="text-slate-400 text-[10px] uppercase font-bold">Ambulans / RS:</span>
+                            <span class="font-semibold text-slate-800">{{ $item->armada->nama_armada ?? 'Belum Ditentukan' }}</span>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px]">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase 
+                            {{ $item->status == 'selesai' ? 'bg-emerald-100 text-emerald-800' : ($item->status == 'menunggu_penanganan' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800') }}">
+                            {{ str_replace('_', ' ', $item->status) }}
+                        </span>
+                        <span class="text-slate-400 font-medium">{{ $item->waktu_request->diffForHumans() }}</span>
+                    </div>
+                </div>
+            @empty
+                <div class="py-8 text-center text-slate-400 text-xs italic bg-slate-50/50 rounded-xl border border-dashed border-slate-200">
+                    Belum ada panggilan ambulans darurat yang tercatat.
+                </div>
+            @endforelse
+        </div>
+
+        <!-- B. TAMPILAN DESKTOP (TABEL BIASA UNTUK LAPTOP) -->
+        <div class="hidden sm:block overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="border-b border-slate-200 text-slate-500 text-xs font-bold uppercase bg-slate-50/80">
@@ -127,7 +179,7 @@
 
 </div>
 
-<!-- Modal Form Request SOS -->
+<!-- MODAL FORM REQUEST SOS -->
 <div id="modalSos" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-100">
         <div class="bg-rose-600 text-white px-5 py-4 flex justify-between items-center">
@@ -165,6 +217,35 @@
         </form>
     </div>
 </div>
+
+<!-- HANDLER SWEETALERT2 DARI SESSION BACKEND -->
+@if (session('success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                title: 'Berhasil! 🎉',
+                text: "{{ session('success') }}",
+                icon: 'success',
+                confirmButtonColor: '#e11d48',
+                customClass: { popup: 'rounded-2xl font-sans' }
+            });
+        });
+    </script>
+@endif
+
+@if (session('error'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                title: 'Perhatian! ⚠️',
+                text: "{{ session('error') }}",
+                icon: 'error',
+                confirmButtonColor: '#e11d48',
+                customClass: { popup: 'rounded-2xl font-sans' }
+            });
+        });
+    </script>
+@endif
 @endsection
 
 @push('scripts')

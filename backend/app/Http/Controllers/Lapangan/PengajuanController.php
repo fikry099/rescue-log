@@ -60,20 +60,16 @@ class PengajuanController extends Controller
             $baseUrl = env('ML_SERVICE_URL', env('FASTAPI_URL', 'http://127.0.0.1:8001'));
             $fastApiUrl = rtrim($baseUrl, '/') . '/predict';
 
-            Log::info('PengajuanController@index - Mengirim Payload ke ML Service:', $payloadML);
-
-            $response = Http::timeout(10)->post($fastApiUrl, $payloadML);
+            // PERBAIKAN TIMEOUT: Ditiadakan atau diturunkan ke 1 detik max agar tidak menggantung server
+            $response = Http::timeout(1)->post($fastApiUrl, $payloadML);
 
             if ($response->successful()) {
                 $hasil = $response->json();
                 $estimasi = $hasil['estimasi_kebutuhan'] ?? [];
-                Log::info('PengajuanController@index - Respon Sukses dari FastAPI ML:', $estimasi);
-            } else {
-                Log::warning('PengajuanController@index - Respon Error FastAPI Status: ' . $response->status());
             }
         } catch (\Exception $e) {
-            Log::warning('PengajuanController@index - Gagal terkoneksi FastAPI ML: ' . $e->getMessage());
-            session()->flash('warning', 'Gagal menghubungkan ke Service AI ML. Anda dapat mengisi jumlah logistik secara manual.');
+            Log::warning('PengajuanController@index - FastAPI ML tidak merespons (Offline / Timeout 1s): ' . $e->getMessage());
+            // Nilai estimasi dibiarkan [] agar pengguna tetap bisa mengisi form pengajuan secara manual tanpa lag
         }
 
         // Ambil riwayat pengajuan posko
@@ -182,7 +178,6 @@ class PengajuanController extends Controller
                 'catatan_posko'        => $request->catatan_posko,
             ]);
 
-            // Jika Request dikirim via JavaScript Ajax (Offline Auto-Sync)
             if ($request->wantsJson()) {
                 return response()->json([
                     'status'  => 'success',
