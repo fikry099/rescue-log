@@ -12,7 +12,24 @@ Platform ini dirancang khusus untuk memenuhi standar **6T** (*Tepat Jenis, Tepat
 
 ---
 
-## 🏗️ Arsitektur Sistem (Microservices)
+## 🔑 Akun Uji Coba & Akses Role (Testing Credentials)
+
+> 💡 **Informasi Password & Pengujian:**  
+> Seluruh akun uji coba menggunakan kata sandi (*password*) yang sama: **`password123`**.  
+> Khusus untuk **Role Petugas Lapangan**, sistem dirancang berbasis **Progressive Web App (PWA) Mobile-First** dengan kemampuan penuh *Offline-First*.
+
+| Role Level | Email Akun | Deskripsi Hak Akses & Fitur Utama |
+| :--- | :--- | :--- |
+| **1. BNPB Pusat** | `bnpb@rescuelog.id` | Monitoring makro nasional, agregasi data krisis, serta persetujuan (*approval*) eskalasi bantuan tingkat nasional. |
+| **2. BPBD Provinsi** | `bpbd.diy@rescuelog.id` | Pengawasan lintas kabupaten/kota, manajemen bantuan provinsi, dan eskalasi logistik ke BNPB. |
+| **3. Admin BPBD Kab.** | `admin@bpbd.com` | Manajemen data bencana daerah, verifikasi laporan TRC, pengelolaan stok gudang utama, dan persetujuan alokasi posko. |
+| **4. Komando Posko** | `komando.bantul@rescuelog.id` | Manajemen armada pengiriman, penetapan rute distribusi, validasi permintaan sub-posko, dan *Response Center* SOS Ambulans. |
+| **📱 5. Petugas Lapangan A (PWA)** | `petugas.lapangan@rescuelog.id` | **PWA Mobile & Offline-First**: Pendataan pengungsi, pengajuan logistik AI, pencatatan penyaluran, dan panggilan darurat SOS. |
+| **📱 6. Petugas Lapangan B (PWA)** | `petugas.depok@rescuelog.id` | **PWA Mobile & Offline-First**: Akses alternatif petugas lapangan Sub-Posko 2 untuk pengujian multi-posko secara simultan. |
+
+---
+
+## 🏗️ Arsitektur Sistem (4-Layer Architecture)
 
 Sistem ini dibangun dengan arsitektur **4-Layer Microservices** yang ter-deploy secara terpisah dan terhubung secara publik:
 
@@ -25,8 +42,8 @@ Sistem ini dibangun dengan arsitektur **4-Layer Microservices** yang ter-deploy 
 
 ## 💡 Fitur Unggulan
 
-- 📱 **Progressive Web App (PWA) Offline-First**: Memungkinkan pencatatan data logistik di area bencana tanpa sinyal internet menggunakan Service Worker & IndexedDB (otomatis sinkronisasi saat *online*).
-- 🤖 **AI-Powered Demand Forecasting**: Prediksi kebutuhan logistik secara otomatis berdasarkan demografi pengungsi dan riwayat bencana.
+- 📱 **Progressive Web App (PWA) Offline-First**: Memungkinkan pencatatan data logistik di area bencana tanpa sinyal internet menggunakan Service Worker v23 & IndexedDB (otomatis sinkronisasi saat *online*).
+- 🤖 **AI-Powered Demand Forecasting**: Prediksi kebutuhan logistik secara otomatis berdasarkan demografi pengungsi dan variabel kondisi lapangan.
 - 🗺️ **Interactive GIS Map (Leaflet.js)**: Visualisasi spasial titik bencana, lokasi posko, dan status stok logistik secara *real-time*.
 - 🔐 **5-Tier Role Access (RBAC)**: Hak akses berjenjang mulai dari **BNPB Pusat**, **BPBD Provinsi**, **Admin BPBD Kabupaten**, **Komando Posko**, hingga **Petugas Lapangan**.
 
@@ -43,25 +60,33 @@ Sistem ini dibangun dengan arsitektur **4-Layer Microservices** yang ter-deploy 
 
 ---
 
-## 🛠️ Tech Stack
+## ⚙️ Panduan Instalasi & Jalankan Lokal (Local Setup)
 
-- **Core Backend**: PHP 8.3+, Laravel 11
-- **ML Engine**: Python 3.11+, FastAPI, Pandas, Scikit-Learn
-- **Database**: PostgreSQL 15, PostGIS Extension (Supabase)
-- **Frontend**: Blade Templates, Tailwind CSS, JavaScript (ES6), Leaflet.js
-- **Deployment & Cloud**: Railway Cloud Platform
+### 1. Prasyarat Sistem
+- PHP >= 8.3 dengan ekstensi `pdo_pgsql`, `mbstring`, `curl`
+- Composer >= 2.x
+- Node.js >= 18.x & NPM
+- Python >= 3.11 (untuk FastAPI ML Service)
 
----
+### 2. Setup Backend Laravel
+```bash
+# Clone repository & masuk ke direktori
+git clone [https://github.com/your-repo/rescue-log.git](https://github.com/your-repo/rescue-log.git)
+cd rescue-log
 
-## 👥 Tim Pengembang
+# Install dependensi PHP & Node.js
+composer install
+npm install
 
-**Universitas Jenderal Achmad Yani Yogyakarta**
-- **Fikri Egnafis** (Lead Developer / Technical Lead)
-- **Ari Syaputra S. Prakon**
-- **Zuvera Mega Chintia**
+# Setup Environment File
+cp .env.example .env
+php artisan key:generate
 
----
+# Migrasi Database & Seeder
+php artisan migrate:fresh --seed
 
-## 📄 Lisensi
+# Build Aset Frontend
+npm run build
 
-Project ini dikembangkan untuk kebutuhan akademik dan kompetisi teknologi kebencanaan di bawah lisensi [MIT License](LICENSE).
+# Jalankan Server
+php artisan serve
