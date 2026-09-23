@@ -24,8 +24,8 @@ Platform ini dirancang khusus untuk memenuhi standar **6T** (*Tepat Jenis, Tepat
 | **2. BPBD Provinsi** | `bpbd.diy@rescuelog.id` | Pengawasan lintas kabupaten/kota, manajemen bantuan provinsi, dan eskalasi logistik ke BNPB. |
 | **3. Admin BPBD Kab.** | `admin@bpbd.com` | Manajemen data bencana daerah, verifikasi laporan TRC, pengelolaan stok gudang utama, dan persetujuan alokasi posko. |
 | **4. Komando Posko** | `komando.bantul@rescuelog.id` | Manajemen armada pengiriman, penetapan rute distribusi, validasi permintaan sub-posko, dan *Response Center* SOS Ambulans. |
-| **📱 5. Petugas Lapangan A (PWA)** | `petugas.lapangan@rescuelog.id` | **PWA Mobile & Offline-First**: Pendataan pengungsi, pengajuan logistik AI, pencatatan penyaluran, dan panggilan darurat SOS. |
-| **📱 6. Petugas Lapangan B (PWA)** | `petugas.depok@rescuelog.id` | **PWA Mobile & Offline-First**: Akses alternatif petugas lapangan Sub-Posko 2 untuk pengujian multi-posko secara simultan. |
+| **📱 5. Petugas Lapangan A (PWA)** | `PARANGTRITIS-2026` | **PWA Mobile & Offline-First**: Pendataan pengungsi, pengajuan logistik AI, pencatatan penyaluran, dan panggilan darurat SOS. |
+| **📱 6. Petugas Lapangan B (PWA)** | `DEPOK-2026` | **PWA Mobile & Offline-First**: Akses alternatif petugas lapangan Sub-Posko 2 untuk pengujian multi-posko secara simultan. |
 
 ---
 
@@ -71,7 +71,7 @@ Sistem ini dibangun dengan arsitektur **4-Layer Microservices** yang ter-deploy 
 
 ### 2. Setup Backend Laravel
 
-\`\`\`bash
+```bash
 # Clone repository & masuk ke direktori
 git clone https://github.com/your-repo/rescue-log.git
 cd rescue-log
@@ -92,11 +92,11 @@ npm run build
 
 # Jalankan Server
 php artisan serve
-\`\`\`
+```
 
 ### 3. Setup ML Service (Python FastAPI)
 
-\`\`\`bash
+```bash
 # Masuk ke folder service ML (atau direktori fastapi-ml)
 cd ml-service
 
@@ -114,7 +114,7 @@ pip install -r requirements.txt
 
 # Jalankan server FastAPI ML
 uvicorn main:app --reload --port 8001
-\`\`\`
+```
 
 ---
 
@@ -133,5 +133,5 @@ uvicorn main:app --reload --port 8001
 **Universitas Jenderal Achmad Yani Yogyakarta**
 
 - Fikri Egnafis
-- Risnal Ari Syaputra S. Prakon
+- Ari Syaputra S. Prakon
 - Zuvera Mega Chintia
