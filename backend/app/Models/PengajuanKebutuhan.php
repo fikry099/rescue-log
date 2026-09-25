@@ -50,6 +50,46 @@ class PengajuanKebutuhan extends Model
         'updated_at'        => 'datetime',
     ];
 
+    /**
+     * Accessor dinamis $pengajuan->items
+     * Mengonversi 12 kolom barang menjadi koleksi objek item untuk dibaca di view
+     */
+    public function getItemsAttribute()
+    {
+        $items = [];
+        $map = [
+            'beras_kg'             => ['nama' => 'Beras', 'satuan' => 'Kg'],
+            'air_minum_dus'        => ['nama' => 'Air Minum', 'satuan' => 'Dus'],
+            'makanan_kaleng_pack'  => ['nama' => 'Makanan Kaleng', 'satuan' => 'Pack'],
+            'makanan_bayi_pack'    => ['nama' => 'Makanan Bayi', 'satuan' => 'Pack'],
+            'minyak_goreng_liter'  => ['nama' => 'Minyak Goreng', 'satuan' => 'Liter'],
+            'popok_bayi_pcs'       => ['nama' => 'Popok Bayi', 'satuan' => 'Pcs'],
+            'popok_dewasa_pcs'     => ['nama' => 'Popok Dewasa', 'satuan' => 'Pcs'],
+            'pembalut_wanita_pack' => ['nama' => 'Pembalut Wanita', 'satuan' => 'Pack'],
+            'hygiene_kit_paket'    => ['nama' => 'Hygiene Kit', 'satuan' => 'Paket'],
+            'selimut_pcs'          => ['nama' => 'Selimut', 'satuan' => 'Pcs'],
+            'matras_terpal_pcs'    => ['nama' => 'Matras / Terpal', 'satuan' => 'Pcs'],
+            'obat_p3k_paket'       => ['nama' => 'Obat P3K', 'satuan' => 'Paket'],
+        ];
+
+        foreach ($map as $field => $info) {
+            $jumlah = (float) ($this->{$field} ?? 0);
+            if ($jumlah > 0) {
+                $items[] = (object) [
+                    'nama_barang' => $info['nama'],
+                    'satuan'      => $info['satuan'],
+                    'jumlah'      => $jumlah,
+                    'inventaris'  => (object) [
+                        'nama_barang' => $info['nama'],
+                        'satuan'      => $info['satuan'],
+                    ]
+                ];
+            }
+        }
+
+        return collect($items);
+    }
+
     public static function generateKode()
     {
         do {
@@ -76,6 +116,6 @@ class PengajuanKebutuhan extends Model
 
     public function pengiriman(): HasOne
     {
-        return $this->hasOne(Pengiriman::class, 'pengajuan_id');
+        return $this->hasOne(PengirimanInventaris::class, 'pengajuan_kebutuhan_id');
     }
 }

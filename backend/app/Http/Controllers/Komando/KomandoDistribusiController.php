@@ -35,8 +35,8 @@ class KomandoDistribusiController extends Controller
 
         $poskoId = $posko ? $posko->id : null;
 
-        // 2. Data Pengajuan Masuk dari Sub-Posko
-        $pengajuans = PengajuanKebutuhan::with(['posko', 'items.inventaris'])
+        // 2. Data Pengajuan Masuk dari Sub-Posko (Perbaikan: Hapus relasi 'items.inventaris' yang tidak ada)
+        $pengajuans = PengajuanKebutuhan::with(['posko', 'user', 'bencana'])
             ->whereIn('status', ['pending', 'menunggu'])
             ->orderBy('created_at', 'desc')
             ->get();
@@ -124,13 +124,13 @@ class KomandoDistribusiController extends Controller
 
             $pengirimanId = $pengiriman->id;
 
-            // 2. Update Status Armada menjadi 'dalam_tugas' (Sesuai ENUM Migrasi armadas)
+            // 2. Update Status Armada menjadi 'dalam_tugas'
             $armada = Armada::find($validated['armada_id']);
             if ($armada) {
                 $armada->update(['status' => 'dalam_tugas']);
             }
 
-            // 3. Update Status Pengajuan Kebutuhan menjadi 'dalam_pengiriman' (Sesuai ENUM Migrasi pengajuan_kebutuhan)
+            // 3. Update Status Pengajuan Kebutuhan menjadi 'dalam_pengiriman'
             $pengajuan->update(['status' => 'dalam_pengiriman']);
         });
 
