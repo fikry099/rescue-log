@@ -2,6 +2,8 @@
 
 > **Platform Manajemen Rantai Pasok Logistik Tanggap Darurat Bencana Terintegrasi Berbasis Progressive Web App (PWA), GIS, dan Machine Learning.**
 
+🔗 **Live Demo:** [rescue-log.up.railway.app](https://rescue-log.up.railway.app)
+
 ---
 
 ## 📌 Ringkasan Platform
@@ -128,7 +130,7 @@ uvicorn main:app --reload --port 8001
 
 ---
 
-## 👥 Tim Pengembang
+## 👥 Tim APA YAA
 
 **Universitas Jenderal Achmad Yani Yogyakarta**
 
