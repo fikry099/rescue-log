@@ -39,7 +39,7 @@ class BencanaController extends Controller
         $pendingDisasters = $pendingQuery->orderBy('waktu_kejadian', 'desc')->get();
         $todayQuery = BencanaPending::whereDate('created_at', today());
 
-        // PERBAIKAN: Ambil bencana yang 'sedang_berjalan' DAN yang 'menunggu_posko'
+        // Ambil bencana yang 'sedang_berjalan' DAN yang 'menunggu_posko'
         $activeDisasters = Bencana::whereIn('status', ['menunggu_posko', 'sedang_berjalan'])
             ->orderBy('tanggal_aktivasi', 'desc')
             ->get();
@@ -232,22 +232,24 @@ class BencanaController extends Controller
                 'tanggal_selesai' => now(),
             ]);
 
-            Posko::komando()
+            // PERBAIKAN: Gunakan Query Builder murni tanpa pemanggilan fungsi statis yang tidak ada
+            Posko::where('tipe_posko', 'komando')
                 ->where('bencana_id', $bencana->id)
                 ->update([
                     'status'     => 'terdaftar_nonaktif',
                     'bencana_id' => null,
                 ]);
 
-            Posko::subPosko()
+            Posko::where('tipe_posko', 'lapangan')
                 ->where('bencana_id', $bencana->id)
                 ->update([
-                    'status' => 'ditutup',
+                    'status'     => 'ditutup',
+                    'bencana_id' => null,
                 ]);
 
             DB::commit();
 
-            return redirect()->back()->with('success', 'Operasi bencana diselesaikan.');
+            return redirect()->back()->with('success', 'Operasi bencana berhasil diselesaikan.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Gagal menyelesaikan bencana: ' . $e->getMessage());
@@ -259,7 +261,7 @@ class BencanaController extends Controller
      */
     public function calculateSpatial(Request $request)
     {
-        // 1. Terima payload baik dalam bentuk String JSON maupun Array
+        // Terima payload baik dalam bentuk String JSON maupun Array
         $request->validate([
             'geojson' => 'required',
         ]);
@@ -271,7 +273,7 @@ class BencanaController extends Controller
             $geoJson = json_decode($geoJson, true);
         }
 
-        // 2. Ambil ring koordinat pertama
+        // Ambil ring koordinat pertama
         $coordinates = $geoJson['coordinates'][0] ?? [];
 
         if (!is_array($coordinates) || count($coordinates) < 3) {
@@ -281,7 +283,7 @@ class BencanaController extends Controller
             ], 422);
         }
 
-        // 3. Panggil Engine Overpass API Live Sensus Bangunan
+        // Panggil Engine Overpass API Live Sensus Bangunan
         $demographics = SpatialCalculationService::fetchRealDataFromOSM($coordinates);
 
         return response()->json([

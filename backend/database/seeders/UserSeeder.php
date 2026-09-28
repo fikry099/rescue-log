@@ -49,7 +49,7 @@ class UserSeeder extends Seeder
             ]
         );
 
-        // 4. Komandan Posko Komando (Role: komando)
+        // 4. Komandan Posko Komando Aktif (Role: komando)
         User::updateOrCreate(
             ['email' => 'komando.bantul@rescuelog.id'],
             [
@@ -61,7 +61,19 @@ class UserSeeder extends Seeder
             ]
         );
 
-        // 5. Petugas Lapangan Sub-Posko 1 (Role: lapangan)
+        // 5. Komandan Posko Komando Siaga / Induk (Role: komando) - BARU
+        User::updateOrCreate(
+            ['email' => 'komando.siaga@rescuelog.id'],
+            [
+                'name'     => 'TRC BPBD Bantul (Komando Siaga)',
+                'password' => Hash::make('password123'),
+                'role'     => 'komando',
+                'posko_id' => null,
+                'bpbd_id'  => $bpbdBantul?->id,
+            ]
+        );
+
+        // 6. Petugas Lapangan Sub-Posko 1 (Role: lapangan)
         User::updateOrCreate(
             ['email' => 'petugas.lapangan@rescuelog.id'],
             [
@@ -73,7 +85,7 @@ class UserSeeder extends Seeder
             ]
         );
 
-        // 6. Petugas Lapangan Sub-Posko 2 (Role: lapangan)
+        // 7. Petugas Lapangan Sub-Posko 2 (Role: lapangan)
         User::updateOrCreate(
             ['email' => 'petugas.depok@rescuelog.id'],
             [
