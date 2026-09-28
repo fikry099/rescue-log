@@ -116,6 +116,6 @@ class PengajuanKebutuhan extends Model
 
     public function pengiriman(): HasOne
     {
-        return $this->hasOne(PengirimanInventaris::class, 'pengajuan_kebutuhan_id');
+        return $this->hasOne(PengirimanInventaris::class, 'pengajuan_id');
     }
 }
